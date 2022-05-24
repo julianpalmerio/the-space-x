@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restx import Api
 
-from namespaces.tasks.tasks import api as nstasks
+from namespaces.cards.cards import api as nscards
 
 blueprint_api_v1 = Blueprint('api_v1', __name__, url_prefix='/api/v1')
 api = Api(
@@ -11,4 +11,4 @@ api = Api(
     description='The Space X API 1.0',
 )
 
-api.add_namespace(nstasks)
+api.add_namespace(nscards)
