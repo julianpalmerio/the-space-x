@@ -9,7 +9,7 @@ class Config:
     """Base config."""
     DEBUG = False
     TESTING = False
-    ERROR_404_HELP = False
+    RESTX_ERROR_404_HELP = False
     RESTX_MASK_SWAGGER = False
 
 
