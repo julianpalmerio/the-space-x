@@ -8,6 +8,8 @@ from random_word import RandomWords
 class CardModel(BaseModel):
     """Basic model representation of a card."""
     type: str
+    label_name: Optional[str]
+    random_member: Optional[bool]
 
 
 class IssueCardModel(CardModel):
@@ -64,4 +66,22 @@ class BugCardModel(CardModel):
         """Valid if the description field is not None"""
         if value is None:
             raise ValueError("description is required")
+        return value
+
+    @validator('label_name', pre=True, always=True)
+    def validate_label_name(value):
+        """Valid if the label_name field is 'Bug'"""
+        if value is None:
+            return "Bug"
+        if value != "Bug":
+            raise ValueError("label_name must be 'Bug'")
+        return value
+
+    @validator('random_member', pre=True, always=True)
+    def validate_random_member(value):
+        """Valid if the random_member field is True"""
+        if value is None:
+            return True
+        if not value:
+            raise ValueError("label_name must be True")
         return value
