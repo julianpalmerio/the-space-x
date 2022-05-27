@@ -10,6 +10,7 @@ class CardModel(BaseModel):
     type: str
     label_name: Optional[str]
     random_member: Optional[bool]
+    category: Optional[str]
 
 
 class IssueCardModel(CardModel):
@@ -36,6 +37,13 @@ class IssueCardModel(CardModel):
         """Valid if the description field is not None"""
         if value is None:
             raise ValueError("description is required")
+        return value
+
+    @validator('category', pre=True, always=True)
+    def validate_category(value):
+        """Valid if the category field is None"""
+        if value is not None:
+            raise ValueError("category must be None")
         return value
 
 
@@ -83,5 +91,41 @@ class BugCardModel(CardModel):
         if value is None:
             return True
         if not value:
-            raise ValueError("label_name must be True")
+            raise ValueError("random_member must be True")
+        return value
+
+    @validator('category', pre=True, always=True)
+    def validate_category(value):
+        """Valid if the category field is None"""
+        if value is not None:
+            raise ValueError("category must be None")
+        return value
+
+
+class TaskCardModel(CardModel):
+    """Model of a task card."""
+    title: str = None
+    category: str = None
+    description: Optional[None] = None
+
+    @validator('type', pre=True, always=True)
+    def validate_type(value):
+        """Valid if the type field is 'task'"""
+        if value != "task":
+            raise ValueError("type must be 'task'")
+        return value
+
+    @validator('title', pre=True, always=True)
+    def validate_title(value):
+        """Valid if the title field is not None"""
+        if value is None:
+            raise ValueError("title is required")
+        return value
+
+    @validator('category', pre=True, always=True)
+    def validate_category(value):
+        """Valid if the category field is valid"""
+        valid_categories = ["Maintenance", "Research", "Test"]
+        if value not in valid_categories:
+            raise ValueError(f"category is not valid, valid categories are {valid_categories}")
         return value
