@@ -1,6 +1,8 @@
 from typing import Optional
+import random
 
 from pydantic import BaseModel, validator
+from random_word import RandomWords
 
 
 class CardModel(BaseModel):
@@ -37,7 +39,7 @@ class IssueCardModel(CardModel):
 
 class BugCardModel(CardModel):
     """Model of a issue card."""
-    title: Optional[None] = None
+    title: Optional[str] = None
     description: str = None
 
     @validator('type', pre=True, always=True)
@@ -49,10 +51,13 @@ class BugCardModel(CardModel):
 
     @validator('title', pre=True, always=True)
     def validate_title(value):
-        """Valid if the title field is None"""
+        """Valid if the title field is None and return a random title"""
         if value is not None:
             raise ValueError("title must be None")
-        return value
+        random_words = RandomWords()
+        random_word = random_words.get_random_word().replace('-', '')
+        random_int = random.randint(1, 100)
+        return f"bug-{random_word}-{random_int}"
 
     @validator('description', pre=True, always=True)
     def validate_description(value):
