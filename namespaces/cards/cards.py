@@ -4,7 +4,7 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from pydantic import ValidationError
 
-from models.card import IssueCardModel
+from models.card import IssueCardModel, BugCardModel
 
 api = Namespace("cards", "Allows you to interact with Trello cards")
 
@@ -25,6 +25,11 @@ class Card(Resource):
         if data["type"] == "issue":
             try:
                 card = IssueCardModel(**data)
+            except ValidationError:
+                return {}, 400
+        elif data["type"] == "bug":
+            try:
+                card = BugCardModel(**data)
             except ValidationError:
                 return {}, 400
         else:
