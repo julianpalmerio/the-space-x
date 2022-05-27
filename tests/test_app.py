@@ -72,3 +72,60 @@ def test_bug_card_fail_description_and_title(client):
     data_json = {"type": "bug", "title": "some_title", "description": "Cockpit is not depressurizing correctly"}
     response = client.post("api/v1/cards/card", json=data_json)
     assert response.status_code == 400
+
+
+def test_task_card_ok(client):
+    """
+    Test if the request is ok if it receives the task type, title and a category.
+    """
+    data_json = {"type": "task", "title": "Clean the Rocket", "category": "Maintenance"}
+    response = client.post("api/v1/cards/card", json=data_json)
+    assert response.status_code == 200
+    card = json.loads(response.json["card"])
+    assert card == data_json
+
+
+def test_task_card_fail_miss_title_and_category(client):
+    """
+    Test if the request is ok if it receives the task type, title and a category.
+    """
+    data_json = {"type": "task"}
+    response = client.post("api/v1/cards/card", json=data_json)
+    assert response.status_code == 400
+
+
+def test_task_card_fail_miss_title(client):
+    """
+    Test if the request is ok if it receives the task type, title and a category.
+    """
+    data_json = {"type": "task", "category": "Maintenance"}
+    response = client.post("api/v1/cards/card", json=data_json)
+    assert response.status_code == 400
+
+
+def test_task_card_fail_miss_category(client):
+    """
+    Test if the request is ok if it receives the task type, title and a category.
+    """
+    data_json = {"type": "task", "title": "Clean the Rocket"}
+    response = client.post("api/v1/cards/card", json=data_json)
+    assert response.status_code == 400
+
+
+def test_task_card_fail_invalid_category(client):
+    """
+    Test if the request is ok if it receives the task type, title and a category.
+    """
+    data_json = {"type": "task", "title": "Clean the Rocket", "category": "Some invalid category"}
+    response = client.post("api/v1/cards/card", json=data_json)
+    assert response.status_code == 400
+
+
+def test_task_card_fail_description_title_and_category(client):
+    """
+    Test if the request fails if it receives the task type, title, description and category.
+    """
+    data_json = {"type": "task", "title": "Clean the Rocket",
+                 "description": "Some description", "category": "Maintenance"}
+    response = client.post("api/v1/cards/card", json=data_json)
+    assert response.status_code == 400
