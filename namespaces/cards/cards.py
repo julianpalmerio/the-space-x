@@ -6,9 +6,14 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 from pydantic import ValidationError
 
+from models import factory
 from models.card import IssueCardModel, BugCardModel, TaskCardModel
 
 api = Namespace("cards", "Allows you to interact with Trello cards")
+
+factory.register("issue", IssueCardModel)
+factory.register("bug", BugCardModel)
+factory.register("task", TaskCardModel)
 
 body_issue_card_post = api.model("BodyIssueCardPost", {
     "type": fields.String(example="issue", required=True),
@@ -71,22 +76,9 @@ class Card(Resource):
         Post a card on trello board.
         '''
         data = request.get_json()
-        if data["type"] == "issue":
-            try:
-                card = IssueCardModel(**data)
-            except ValidationError:
-                return {}, 400
-        elif data["type"] == "bug":
-            try:
-                card = BugCardModel(**data)
-            except ValidationError:
-                return {}, 400
-        elif data["type"] == "task":
-            try:
-                card = TaskCardModel(**data)
-            except ValidationError:
-                return {}, 400
-        else:
+        try:
+            card = factory.create(data)
+        except ValueError or ValidationError:
             return {}, 400
         url = "https://api.trello.com/1/cards"
         headers = {
