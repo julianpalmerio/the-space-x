@@ -47,7 +47,7 @@ class Card(Resource):
             params=query
             )
         if trello_response.status_code == 200:
-            return {}, 200
+            return {"card": card.json()}, 200
 
 
 api.add_resource(Card, "/card")
