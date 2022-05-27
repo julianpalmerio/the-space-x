@@ -1,3 +1,6 @@
+import json
+
+
 def test_issue_card_ok(client):
     """
     Test if the request is ok if it receives the issue type, title and description.
@@ -5,6 +8,8 @@ def test_issue_card_ok(client):
     data_json = {"type": "issue", "title": "Send message", "description": "Let pilots send messages to Central"}
     response = client.post("api/v1/cards/card", json=data_json)
     assert response.status_code == 200
+    card = json.loads(response.json["card"])
+    assert card == data_json
 
 
 def test_issue_card_fail_miss_title(client):
@@ -41,6 +46,14 @@ def test_bug_card_ok(client):
     data_json = {"type": "bug", "description": "Cockpit is not depressurizing correctly"}
     response = client.post("api/v1/cards/card", json=data_json)
     assert response.status_code == 200
+    card = json.loads(response.json["card"])
+    assert card["type"] == data_json["type"]
+    assert card["description"] == data_json["description"]
+    title = card["title"].split("-")
+    assert title[0] == "bug"
+    assert isinstance(title[1], str)
+    assert title[1]
+    assert title[2].isdigit()
 
 
 def test_bug_card_fail_miss_description(client):
