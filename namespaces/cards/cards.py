@@ -1,14 +1,22 @@
 import requests
 
 from flask import request
+from flask_restx import Namespace, Resource, fields
 from pydantic import ValidationError
 
 from models.card import IssueCardModel
 
 api = Namespace("cards", "Allows you to interact with Trello cards")
 
+body_issue_card_post = api.model("BodyIssueCardPost", {
+    "type": fields.String(example="issue", required=True),
+    "title": fields.String(example="Send message"),
+    "description": fields.String(example="Let pilots send messages to Central")
+}, strict=True)
+
 
 class Card(Resource):
+    @api.expect(body_issue_card_post, description='Post a card on trello board', validate=True)
     def post(self):
         '''
         Post a card on trello board.
