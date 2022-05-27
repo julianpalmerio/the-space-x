@@ -13,6 +13,13 @@ class IssueCardModel(CardModel):
     title: str = None
     description: str = None
 
+    @validator('issue', pre=True, always=True)
+    def validate_type(value):
+        """Valid if the type field is 'issue'"""
+        if value != "issue":
+            raise ValueError("type must be 'issue'")
+        return value
+
     @validator('title', pre=True, always=True)
     def validate_title(value):
         """Valid if the title field is not None"""
