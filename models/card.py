@@ -8,6 +8,8 @@ from random_word import RandomWords
 class CardModel(BaseModel):
     """Basic model representation of a card."""
     type: str
+    title: Optional[str] = None
+    description: Optional[str] = None
     label_name: Optional[str]
     random_member: Optional[bool]
     category: Optional[str]
@@ -15,8 +17,6 @@ class CardModel(BaseModel):
 
 class IssueCardModel(CardModel):
     """Model of a issue card."""
-    title: str = None
-    description: str = None
 
     @validator('type', pre=True, always=True)
     def validate_type(value):
@@ -49,8 +49,6 @@ class IssueCardModel(CardModel):
 
 class BugCardModel(CardModel):
     """Model of a issue card."""
-    title: Optional[str] = None
-    description: str = None
 
     @validator('type', pre=True, always=True)
     def validate_type(value):
@@ -104,9 +102,6 @@ class BugCardModel(CardModel):
 
 class TaskCardModel(CardModel):
     """Model of a task card."""
-    title: str = None
-    category: str = None
-    description: Optional[None] = None
 
     @validator('type', pre=True, always=True)
     def validate_type(value):
@@ -128,4 +123,11 @@ class TaskCardModel(CardModel):
         valid_categories = ["Maintenance", "Research", "Test"]
         if value not in valid_categories:
             raise ValueError(f"category is not valid, valid categories are {valid_categories}")
+        return value
+
+    @validator('description', pre=True, always=True)
+    def validate_description(value):
+        """Valid if the description field is None"""
+        if value is not None:
+            raise ValueError("description must be None")
         return value
