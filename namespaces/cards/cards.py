@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, current_app
 from flask_restx import Namespace, Resource, fields
 from pydantic import ValidationError
 
@@ -31,11 +31,11 @@ class Card(Resource):
             card = factory.create(data)
         except ValueError or ValidationError:
             return {}, 400
-        board_id = "628c1cfd6595cd86a2a5af94"
-        list_id = "628c1cfd6595cd86a2a5af95"
-        key = "b9be662af7fd7fa6cc4e31df81f53ca5"
-        token = "bfe85944cab9a57dd7def1cb103a38d0b7766e655270f48a61f2838300c7b45a"
-        trello_conector = TrelloConector(key, token)
+        board_id = current_app.config["TRELLO_BOARD_ID"]
+        list_id = current_app.config["TRELLO_TODO_LIST_ID"]
+        trello_key = current_app.config["TRELLO_KEY"]
+        trello_token = current_app.config["TRELLO_TOKEN"]
+        trello_conector = TrelloConector(trello_key, trello_token)
         result = trello_conector.post_card(card, list_id, board_id)
         return {"card": result}, 200
 

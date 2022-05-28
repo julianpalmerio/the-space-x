@@ -1,3 +1,4 @@
+import os
 from os import path
 from dotenv import load_dotenv
 
@@ -11,6 +12,10 @@ class Config:
     TESTING = False
     RESTX_ERROR_404_HELP = False
     RESTX_MASK_SWAGGER = False
+    TRELLO_KEY = os.environ.get("TRELLO_KEY")
+    TRELLO_TOKEN = os.environ.get("TRELLO_TOKEN")
+    TRELLO_BOARD_ID = os.environ.get("TRELLO_BOARD_ID")
+    TRELLO_TODO_LIST_ID = os.environ.get("TRELLO_TODO_LIST_ID")
 
 
 class ProductionConfig(Config):
