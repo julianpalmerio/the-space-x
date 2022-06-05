@@ -8,7 +8,7 @@ def test_issue_card_ok(client):
     data_json = {"type": "issue", "title": "Send message", "description": "Let pilots send messages to Central"}
     response = client.post("api/v1/cards/card", json=data_json)
     assert response.status_code == 200
-    card = json.loads(response.json["card"])
+    card = response.json["card"]
     assert card == data_json
 
 
@@ -46,7 +46,7 @@ def test_bug_card_ok(client):
     data_json = {"type": "bug", "description": "Cockpit is not depressurizing correctly"}
     response = client.post("api/v1/cards/card", json=data_json)
     assert response.status_code == 200
-    card = json.loads(response.json["card"])
+    card = response.json["card"]
     assert card["type"] == data_json["type"]
     assert card["description"] == data_json["description"]
     title = card["title"].split("-")
@@ -81,7 +81,7 @@ def test_task_card_ok(client):
     data_json = {"type": "task", "title": "Clean the Rocket", "category": "Maintenance"}
     response = client.post("api/v1/cards/card", json=data_json)
     assert response.status_code == 200
-    card = json.loads(response.json["card"])
+    card = response.json["card"]
     assert card == data_json
 
 
