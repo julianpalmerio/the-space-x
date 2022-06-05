@@ -1,3 +1,5 @@
+import json
+
 from flask import request, current_app
 from flask_restx import Namespace, Resource, fields
 from pydantic import ValidationError
@@ -47,7 +49,7 @@ class Card(Resource):
         except Exception as ex:
             api.logger.exception("An error occurred")
             raise ex
-        return {"card": result}, 200
+        return {"card": json.loads(result)}, 200
 
 
 api.add_resource(Card, "/card")
