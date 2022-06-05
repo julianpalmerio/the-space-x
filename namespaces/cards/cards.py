@@ -26,17 +26,27 @@ class Card(Resource):
         '''
         Post a card on trello board.
         '''
+        api.logger.debug("Processing Card Post Request")
         data = request.get_json()
+        api.logger.debug(f"Request Payload: {data}")
         try:
             card = factory.create(data)
-        except ValueError or ValidationError:
-            return {}, 400
+            api.logger.debug(f"Factory.create result: {card.json()}")
+        except ValueError or ValidationError as ex:
+            api.logger.exception("An error occurred while loading the card model")
+            return {"message": str(ex)}, 400
         board_id = current_app.config["TRELLO_BOARD_ID"]
         list_id = current_app.config["TRELLO_TODO_LIST_ID"]
         trello_key = current_app.config["TRELLO_KEY"]
         trello_token = current_app.config["TRELLO_TOKEN"]
-        trello_conector = TrelloConector(trello_key, trello_token)
-        result = trello_conector.post_card(card, list_id, board_id)
+        try:
+            trello_conector = TrelloConector(trello_key, trello_token)
+            api.logger.debug("Instanced trello connector")
+            result = trello_conector.post_card(card, list_id, board_id)
+            api.logger.debug(f"Successfully published card, result: {result}")
+        except Exception as ex:
+            api.logger.exception("An error occurred")
+            raise ex
         return {"card": result}, 200
 
 
